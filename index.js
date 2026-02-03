@@ -487,6 +487,25 @@ async function injectOas(config, document) {
       }
       buildApiSummaryTables({config, document, apis});
       buildEndpointDetails({config, document, apis});
+    } else {
+      throw new Error('ReSpec config error: ' +
+        '"oas" property must provide an array of OpenAPI definition file URLs');
+    }
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+//This needed to be a second function from injectOas to allow it to be seperated in the pre and post processing
+//steps to get links to render properly. 
+async function injectOasComponentTables(config, document) {
+  try {
+    const apis = [];
+    if(Array.isArray(config.oas)) {
+      for(const oasUrl of config.oas) {
+        const oasApi = await SwaggerParser.validate(oasUrl);
+        apis.push(oasApi);
+      }
       buildComponentTables({config, document, apis});
     } else {
       throw new Error('ReSpec config error: ' +
@@ -497,6 +516,11 @@ async function injectOas(config, document) {
   }
 }
 
+
 window.respecOas = {
   injectOas
+};
+
+window.respecOasComponentTable = {
+  injectOasComponentTables
 };
