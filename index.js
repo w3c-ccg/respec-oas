@@ -25,7 +25,7 @@ function buildComponentTables({document, apis}) {
     // set up the API component table headers
     const tableHeader = document.createElement('thead');
     const tableBody = document.createElement('tbody');
-    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th>';
+    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th><th>Definition Link</th>';
     table.appendChild(tableHeader);
     table.appendChild(tableBody);
 
@@ -36,6 +36,8 @@ function buildComponentTables({document, apis}) {
         for(const verb in endpoint) {
           let expectedCallerIn = endpoint[verb]['x-expectedCaller'];
           let expectedCallerOut = structuredClone(expectedCallerIn);
+          let endpointLinkIn = endpoint[verb]['x-componentTableLink'];
+          let endpointLinkOut = structuredClone(endpointLinkIn);
           const tableRow = document.createElement('tr');
           if(expectedCallerIn === undefined) {
             expectedCallerOut = "Expected Caller Undefined";
@@ -56,7 +58,7 @@ function buildComponentTables({document, apis}) {
             expectedCallerOut = expectedCallerOut.join(', ');
           }
           tableRow.innerHTML = `<td>${verb.toUpperCase()}&nbsp;${path}</td>` +
-            `<td>${expectedCallerOut}</td>`;
+            `<td>${expectedCallerOut}</td>` + `<td><a href="#${endpointLinkOut}">Link</a></td>`;
           tableBody.appendChild(tableRow);
         }
       }
