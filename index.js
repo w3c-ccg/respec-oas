@@ -496,7 +496,8 @@ async function injectOas(config, document) {
   }
 }
 
-//This needed to be a second function from injectOas to allow it to be seperated in the pre and post processing
+//This needed to be a second function from inject
+//so as to allow it to be separated in the pre and post processing
 //steps to get links to render properly. 
 async function injectOasComponentTables(config, document) {
   try {
