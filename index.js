@@ -58,7 +58,7 @@ function buildComponentTables({document, apis}) {
             expectedCallerOut = expectedCallerOut.join(', ');
           }
           tableRow.innerHTML = `<td>${verb.toUpperCase()}&nbsp;${path}</td>` +
-            `<td>${expectedCallerOut}</td>` + `<td><a href="#${endpointLinkOut}">Link</a></td>`;
+            `<td>${expectedCallerOut}</td>` + `<td>[[[#${endpointLinkOut}]]]</td>`;
           tableBody.appendChild(tableRow);
         }
       }
