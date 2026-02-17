@@ -25,7 +25,7 @@ function buildComponentTables({document, apis}) {
     // set up the API component table headers
     const tableHeader = document.createElement('thead');
     const tableBody = document.createElement('tbody');
-    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th>';
+    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th><th>Definition Link</th>';
     table.appendChild(tableHeader);
     table.appendChild(tableBody);
 
@@ -36,6 +36,8 @@ function buildComponentTables({document, apis}) {
         for(const verb in endpoint) {
           let expectedCallerIn = endpoint[verb]['x-expectedCaller'];
           let expectedCallerOut = structuredClone(expectedCallerIn);
+          let endpointLinkIn = endpoint[verb]['x-componentTableLink'];
+          let endpointLinkOut = structuredClone(endpointLinkIn);
           const tableRow = document.createElement('tr');
           if(expectedCallerIn === undefined) {
             expectedCallerOut = "Expected Caller Undefined";
@@ -56,7 +58,7 @@ function buildComponentTables({document, apis}) {
             expectedCallerOut = expectedCallerOut.join(', ');
           }
           tableRow.innerHTML = `<td>${verb.toUpperCase()}&nbsp;${path}</td>` +
-            `<td>${expectedCallerOut}</td>`;
+            `<td>${expectedCallerOut}</td>` + `<td>[[[#${endpointLinkOut}]]]</td>`;
           tableBody.appendChild(tableRow);
         }
       }
@@ -485,6 +487,26 @@ async function injectOas(config, document) {
       }
       buildApiSummaryTables({config, document, apis});
       buildEndpointDetails({config, document, apis});
+    } else {
+      throw new Error('ReSpec config error: ' +
+        '"oas" property must provide an array of OpenAPI definition file URLs');
+    }
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+//This needed to be a second function from inject
+//so as to allow it to be separated in the pre and post processing
+//steps to get links to render properly. 
+async function injectOasComponentTables(config, document) {
+  try {
+    const apis = [];
+    if(Array.isArray(config.oas)) {
+      for(const oasUrl of config.oas) {
+        const oasApi = await SwaggerParser.validate(oasUrl);
+        apis.push(oasApi);
+      }
       buildComponentTables({config, document, apis});
     } else {
       throw new Error('ReSpec config error: ' +
@@ -495,6 +517,11 @@ async function injectOas(config, document) {
   }
 }
 
+
 window.respecOas = {
   injectOas
+};
+
+window.respecOasComponentTable = {
+  injectOasComponentTables
 };
