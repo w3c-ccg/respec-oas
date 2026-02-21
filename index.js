@@ -25,7 +25,7 @@ function buildComponentTables({document, apis}) {
     // set up the API component table headers
     const tableHeader = document.createElement('thead');
     const tableBody = document.createElement('tbody');
-    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th><th>Definition Link</th>';
+    tableHeader.innerHTML = '<th>Endpoint</th><th>Expected Caller</th><th>Definition</th>';
     table.appendChild(tableHeader);
     table.appendChild(tableBody);
 
@@ -498,7 +498,7 @@ async function injectOas(config, document) {
 
 //This needed to be a second function from inject
 //so as to allow it to be separated in the pre and post processing
-//steps to get links to render properly. 
+//steps to get links to render properly.
 async function injectOasComponentTables(config, document) {
   try {
     const apis = [];
