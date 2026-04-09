@@ -220,24 +220,25 @@ function getResponseBodySchema(content) {
   if(!content) {
     return document.createElement('span');
   }
-  const section = document.createElement('section');
-  section.style['font-size'] = '0.75rem';
+  const container = document.createElement('div');
+  container.style['font-size'] = '0.75rem';
   return Object.entries(content).reduce((combined, [contentType, {schema}]) => {
     combined.appendChild(
       textEl({el: 'i', text: `content-type: ${contentType}`}));
     combined.appendChild(document.createElement('br'));
     if(schema) {
-      const _el = document.createElement('td');
+      const schemaWrapper = document.createElement('div');
       if(schema?.type === 'array') {
-        _el.innerHTML = 'Each item in the array MUST be ';
-        _el.innerHTML += renderJsonSchemaObject(schema.items);
+        schemaWrapper.innerHTML =
+          'Each item in the array MUST be ' +
+          renderJsonSchemaObject(schema.items);
       } else {
-        _el.innerHTML = renderJsonSchemaObject(schema);
+        schemaWrapper.innerHTML = renderJsonSchemaObject(schema);
       }
-      combined.appendChild(_el);
+      combined.appendChild(schemaWrapper);
     }
     return combined;
-  }, section);
+  }, container);
 }
 
 /**
@@ -316,9 +317,11 @@ function renderJsonSchema(schema) {
       valueRendering = 'RENDER ERROR: <pre>' +
         JSON.stringify(subSchema, null, 2) + '</pre>';
     }
-    tableBody.innerHTML +=
-      `<tr><td style='vertical-align: top;'>${propertyRendering}</td>` +
-      `<td>${valueRendering}</td></tr>`;
+    const tableRow = document.createElement('tr');
+    tableRow.innerHTML =
+      `<td style='vertical-align: top;'>${propertyRendering}</td>` +
+      `<td>${valueRendering}</td>`;
+    tableBody.appendChild(tableRow);
   }
 
   requestSchemaTable.appendChild(tableHeader);
