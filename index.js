@@ -312,7 +312,19 @@ function renderJsonSchema(schema) {
     } else if(subSchema.type === 'string' || subSchema.type === 'boolean') {
       propertyRendering += ` [${subSchema.type}]`;
       valueRendering = subSchema.description;
+    } else if(Array.isArray(subSchema.allOf)){
+      for(const i in subSchema.allOf) {
+        if(subSchema.allOf[0].type === 'object') {
+          propertyRendering = `<code>${property}</code> [object]`;
+          valueRendering = renderJsonSchemaObject(subSchema);
+        } else {
+          console.log('Value rendering error, allOf unhandled case:', subSchema);
+            valueRendering = 'RENDER ERROR: <pre>' +
+          JSON.stringify(subSchema, null, 2) + '</pre>';    
+        }
+      }
     } else {
+      
       console.log('Value rendering error:', subSchema);
       valueRendering = 'RENDER ERROR: <pre>' +
         JSON.stringify(subSchema, null, 2) + '</pre>';
@@ -471,6 +483,16 @@ function renderJsonSchemaValue(property, value) {
   } else if(value.type === 'string' || value.type === 'integer' ||
     value.type === 'boolean') {
     // no-op
+  } else if(Array.isArray(value.allOf)){
+      for(const i in value.allOf) {
+        if(value.allOf[0].type === 'object') {
+          valueRendering = renderJsonSchemaObject(value);
+        } else {
+          console.log('Value rendering error, allOf unhandled case:', value);
+          valueRendering = 'RENDER ERROR: <pre>' +
+          JSON.stringify(value, null, 2) + '</pre>';    
+        }
+      }
   } else {
     console.log('Value rendering error:', value);
     valueRendering = 'RENDER ERROR: <pre>' +
