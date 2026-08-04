@@ -51,3 +51,19 @@ and then call it from the respec configuration in a post-processing step:
 ```js
     postProcess: [window.respecOas.injectOas],
 ```
+
+## Release Process
+
+To make a new release:
+
+```code
+Checkout main (merge any PRs to main).
+checkout -b v1.0.x for a new release.
+nvm use 24
+Update release to 1.0.x in package.json 
+npm build
+git add dist/* 
+git commit -a
+git tag 1.0.x
+git push --tags
+```
